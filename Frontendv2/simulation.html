@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulation - ASCEND</title>
+    <link rel="stylesheet" href="simulation.css">
+    
+</head>
+<body>
+    <header style="background: var(--usu-navy); color: white; padding: 20px; text-align: center;">
+        <h1 style="margin: 0; letter-spacing: 2px;">ASCEND</h1>
+        <p style="margin: 5px 0 0 0; color: var(--usu-gold); font-style: italic;">AI-Supported Cancer Education and Nuclear-Medicine Dashboard</p>
+    </header>
+
+    <nav style="background: #00152e; padding: 10px; text-align: center;">
+        <a href="index.php" style="color: white; margin: 0 15px; text-decoration: none;">Home</a>
+        <a href="simulation.html" style="color: var(--usu-gold); margin: 0 15px; text-decoration: none; border-bottom: 2px solid var(--usu-gold);">Simulation</a>
+    </nav>
+
+    <main>
+        <section style="padding: 20px; max-width: 1200px; margin: auto;">
+            <h2 style="color: var(--usu-navy);">Clinical Consultation Simulator</h2>
+            <div class="status-badge">SESSION ACTIVE: Patient Interview</div>
+
+            <div class="simulation-container">
+                <div id="chat-interface">
+                    <div id="chat-window">
+                        <div class="message ai-message">
+                            Hello, Doctor. Thank you for seeing me. I've been feeling very tired lately, and I have this persistent pain in my back that won't go away.
+                        </div>
+                    </div>
+                    <div class="input-area">
+                        <input type="text" id="user-input" placeholder="Ask the patient a question..." onkeypress="handleKeyPress(event)">
+                        <button onclick="sendMessage()" class="btn-send">Send</button>
+                    </div>
+                </div>
+
+                <aside class="sidebar">
+                    <h3 style="margin-top: 0; color: var(--usu-navy);">Patient Chart</h3>
+                    <hr>
+                    <p><strong>Name:</strong> John Doe</p>
+                    <p><strong>Age:</strong> 52</p>
+                    <p><strong>Vitals:</strong> BP 138/88, Temp 98.6°F</p>
+                    <p><strong>Chief Complaint:</strong> Lower back pain (4/10) and lethargy.</p>
+                    <hr>
+                    <p style="font-size: 0.85em; color: #555; line-height: 1.5;">
+                        <em>Learning Objective: Practice empathetic communication while gathering a history suspicious for metastatic prostate cancer.</em>
+                    </p>
+                </aside>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        async function sendMessage() {
+            const inputField = document.getElementById('user-input');
+            const chatWindow = document.getElementById('chat-window');
+            const message = inputField.value.trim();
+
+            if (message === "") return;
+
+            // 1. Add User Bubble
+            chatWindow.innerHTML += `<div class="message user-message">${message}</div>`;
+            inputField.value = '';
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+
+            // 2. Add "Thinking" Bubble
+            const typingId = "typing-" + Date.now();
+            chatWindow.innerHTML += `<div class="message ai-message" id="${typingId}">...</div>`;
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+
+            try {
+                // 3. Call chat.php
+                const response = await fetch('chat.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                });
+
+                const data = await response.json();
+
+                // 4. Handle Errors from PHP
+                if (data.error) {
+                    document.getElementById(typingId).innerText = "System Error: " + data.error;
+                    console.error("PHP Error:", data);
+                    return;
+                }
+
+                // 5. Extract Gemini Response text
+                // We check if 'candidates' exists to prevent crashing
+                if (data.candidates && 
+                    data.candidates[0].content && 
+                    data.candidates[0].content.parts[0].text) {
+                    
+                    const aiText = data.candidates[0].content.parts[0].text;
+                    document.getElementById(typingId).innerText = aiText;
+                    
+                } else {
+                    document.getElementById(typingId).innerText = "The patient stares blankly. (API response format unclear)";
+                    console.log("Unexpected Data:", data);
+                }
+
+            } catch (error) {
+                document.getElementById(typingId).innerText = "Error: Could not reach the server.";
+                console.error("Fetch error:", error);
+            }
+
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        // Allow 'Enter' key to send message
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+    </script>
+
+</body>
+</html>

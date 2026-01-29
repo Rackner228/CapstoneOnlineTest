@@ -1,0 +1,2 @@
+John Doe,45,Male,Bio here,Stable,In-person
+Jane Smith,32,Female,Bio here,Critical,Telehealth
