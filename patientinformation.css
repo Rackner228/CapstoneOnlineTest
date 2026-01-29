@@ -1,0 +1,64 @@
+/* Style the tab container */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: var(--usu-light-gray);
+  margin-top: 20px;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  
+  /* BRAND UPDATE: Franklin Gothic is the USU standard for accents/headlines */
+  font-family: "Franklin Gothic Medium", "Franklin Gothic", "ITC Franklin Gothic", Arial, sans-serif;
+  font-weight: 600; /* Maps to Franklin Gothic Demi */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--usu-navy);
+
+  padding: 22px 30px; 
+  transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: var(--usu-gold);
+  color: var(--usu-navy);
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: var(--usu-navy);
+  color: var(--usu-white);
+  border-bottom: 4px solid var(--usu-gold); 
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 40px; 
+  border: 1px solid #ccc;
+  border-top: none;
+  background-color: var(--usu-white);
+  min-height: 250px;
+
+  /* BRAND UPDATE: Calibri Light is the USU standard for body text */
+  font-family: "Calibri Light", Calibri, Segoe UI, sans-serif;
+  line-height: 1.6;
+}
+
+/* Adjusting H3 inside tabs for better spacing */
+.tabcontent h3 {
+  margin-top: 0;
+  /* BRAND UPDATE: Bell MT for formal/academic sub-headers */
+  font-family: "Bell MT", Georgia, serif;
+  font-weight: bold;
+  color: var(--usu-navy);
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
