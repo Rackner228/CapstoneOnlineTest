@@ -13,7 +13,12 @@ header('Access-Control-Allow-Headers: Content-Type');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit(0);
 
 // 2. CONFIG
-$apiKey = ''; // Check your key!
+$apiKey = getenv('GEMINI_API_KEY'); // Check your key!
+if (!$apiKey) {
+    echo json_encode(["overall_score" => 0, "summary" => "Server Error: API Key missing.", "feedback" => []]);
+    exit;
+}
+
 $modelName = 'gemini-2.5-flash';
 
 // 3. GET INPUT

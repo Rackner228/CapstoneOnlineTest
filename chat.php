@@ -17,7 +17,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // 2. CONFIGURATION
 // -------------------------
 // *** PASTE YOUR API KEY HERE ***
-$apiKey = ''; // Replace with your actual key
+$apiKey = getenv('GEMINI_API_KEY'); // Check your key!
+if (!$apiKey) {
+    echo json_encode(["overall_score" => 0, "summary" => "Server Error: API Key missing.", "feedback" => []]);
+    exit;
+}
 $modelName = 'gemini-2.5-flash'; 
 
 // 3. GET USER INPUT
