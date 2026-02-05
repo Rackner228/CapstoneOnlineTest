@@ -1,116 +1,178 @@
-/* Uniformed Services University (USU) Brand Stylesheet 
-   Primary Palette: USU Navy (#002147), USU Gold (#997F3D)
-*/
-
+/* ASCEND Design System */
 :root {
-    --usu-navy: #002147;      /* Deep Navy */
-    --usu-gold: #997F3D;      /* Metallic/Antique Gold */
-    --usu-gold-light: #C5B358;
-    --usu-white: #FFFFFF;
-    --usu-light-gray: #F4F4F4;
-    --usu-dark-gray: #333333;
+    /* Brand Colors - USU Palette */
+    --primary: #002147;       /* Navy */
+    --primary-light: #003366;
+    --accent: #997F3D;        /* Gold */
+    --accent-light: #C5B358;
+    
+    /* Neutrals */
+    --bg-body: #F5F7FA;       /* Light Blue-Grey Background */
+    --bg-surface: #FFFFFF;
+    --text-main: #2C3E50;
+    --text-muted: #64748B;
+    --border: #E2E8F0;
+    
+    /* Spacing & Layout */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --container-width: 1100px;
 }
 
+/* Base Reset */
 body {
-    font-family: "Bell MT", "Baskerville", "Garamond", "Times New Roman", serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
     line-height: 1.6;
-    color: var(--usu-dark-gray);
     margin: 0;
-    background-color: var(--usu-white);
+    -webkit-font-smoothing: antialiased;
 }
 
-/* Header with Navy and Gold Accents */
-header {
-    background-color: var(--usu-navy);
-    color: var(--usu-white);
-    padding: 2rem 5%;
-    border-bottom: 5px solid var(--usu-gold);
-    text-align: left;
+/* Header Component */
+.app-header {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
-header h1 {
-    margin: 0;
-    font-size: 1.75rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-logo {
     font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--primary);
+    letter-spacing: -0.02em;
+}
+
+.brand-divider {
+    height: 24px;
+    width: 1px;
+    background: var(--border);
+}
+
+.brand-context {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-weight: 500;
 }
 
 /* Navigation */
-nav {
-    background-color: var(--usu-light-gray);
-    border-bottom: 1px solid #ddd;
-    padding: 0.75rem 5%;
+.nav-links {
+    display: flex;
+    gap: 24px;
 }
 
-nav a {
-    color: var(--usu-navy);
+.nav-item {
+    color: var(--text-muted);
     text-decoration: none;
-    font-weight: 600;
-    margin-right: 25px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.nav-item:hover, .nav-item.active {
+    color: var(--primary);
+}
+
+/* Main Layout */
+.container {
+    max-width: var(--container-width);
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 0;
+}
+
+.page-subtitle {
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+}
+
+/* Card Component */
+.card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Typography Utilities */
+.text-label {
     text-transform: uppercase;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
 }
 
-nav a:hover {
-    color: var(--usu-gold);
+.text-value {
+    font-size: 1rem;
+    color: var(--text-main);
+    font-weight: 500;
 }
 
-/* Typography and Content */
-main {
-    padding: 3rem 5%;
-    max-width: 1000px;
-    margin: auto;
-}
-
-h2 {
-    color: var(--usu-navy);
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    position: relative;
-}
-
-/* Gold Underline Detail */
-h2::after {
-    content: '';
-    display: block;
-    width: 60px;
-    height: 4px;
-    background: var(--usu-gold);
-    margin-top: 10px;
-}
-
-/* Call to Action Button */
-.btn-primary {
-    display: inline-block;
-    background-color: var(--usu-navy);
-    color: var(--usu-white);
-    padding: 12px 24px;
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    font-size: 0.875rem;
     text-decoration: none;
-    font-weight: bold;
-    border: 2px solid var(--usu-navy);
-    transition: all 0.3s ease;
+    transition: all 0.2s;
     cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
 }
 
 .btn-primary:hover {
-    background-color: var(--usu-gold);
-    border-color: var(--usu-gold);
-    color: var(--usu-navy);
+    background-color: var(--primary-light);
 }
 
-/* Institutional Footer */
-footer {
-    background-color: var(--usu-navy);
-    color: var(--usu-white);
-    padding: 3rem 5%;
-    margin-top: 50px;
-    font-size: 0.85rem;
+.btn-outline {
+    background-color: transparent;
+    border-color: var(--border);
+    color: var(--text-main);
 }
 
-.footer-line {
-    border-top: 1px solid var(--usu-gold);
-    margin-top: 20px;
-    padding-top: 20px;
-    opacity: 0.6;
+.btn-outline:hover {
+    border-color: var(--primary);
+    color: var(--primary);
 }

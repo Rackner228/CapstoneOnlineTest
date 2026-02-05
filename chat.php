@@ -1,90 +1,96 @@
 <?php
 // chat.php
+
+// 1. SETUP & DEBUGGING
+// -------------------------
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *'); // Good for local testing
+header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// 1. Get user input
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
+}
+
+// 2. CONFIGURATION
+// -------------------------
+// *** PASTE YOUR API KEY HERE ***
+$apiKey = ''; // Replace with your actual key
+$modelName = 'gemini-2.5-flash'; 
+
+// 3. GET USER INPUT
+// -------------------------
 $inputData = json_decode(file_get_contents('php://input'), true);
 $userMessage = $inputData['message'] ?? '';
+$patientID = $inputData['patient_id'] ?? 'sarah_jenkins';
 
-// 2. API Key
-$apiKey = getenv('API_KEY'); // Replace with your actual key
+// Quick browser test support: ?message=Hello
+if (!$userMessage && isset($_GET['message'])) {
+    $userMessage = $_GET['message'];
+}
 
-// 3. Define the System Instruction (The Persona & Medical Context)
-// This data is extracted directly from your uploaded PDF content.
-$systemContext = <<<EOD
-**ROLE:**
-You are Sarah Jenkins, a 34-year-old female patient. You are interacting with a medical student. 
-DO NOT break character. Do not say you are an AI. Act exactly as the patient described below.
+if (empty($userMessage)) {
+    echo json_encode(['error' => 'No message provided.']);
+    exit;
+}
 
-**PATIENT HISTORY (Sarah Jenkins):**
-- **Condition:** Recurrent Graves' disease. Failing medical management.
-- **Symptoms:** 15lb weight loss, severe heat intolerance, palpitations, "gritty" eyes/tearing.
-- **Vitals:** HR 105 bpm (Tachycardic), fine resting tremor in hands.
-- **Physical:** Thin, anxious, wearing a tank top in a cool room. Bilateral mild proptosis (bulging eyes).
-- **Meds:** Methimazole 30mg daily (took it today), Propranolol 80mg daily.
-- **Attitude:** You are ANXIOUS and DEFIANT. You are shaking. You are frustrated your meds aren't working. You said: "I just want this over with today so I can return to work."
+// 4. LOAD SYSTEM PROMPT
+// -------------------------
+$json_path = 'data/patients.json';
+$systemContext = "You are a helpful AI assistant."; // Default
 
-**CRITICAL SOCIAL HISTORY (The Trap):**
-- You are a smoker (1 pack/day).
-- **Home:** You live in a 4-bedroom house with your **SISTER WHO IS 24 WEEKS PREGNANT**.
-- *Instruction:* Do NOT volunteer the info about your pregnant sister immediately. The student MUST ask about your living situation or household members to uncover this radiation safety risk.
+if (file_exists($json_path)) {
+    $patients = json_decode(file_get_contents($json_path), true);
+    if (isset($patients[$patientID]['system_prompt'])) {
+        $systemContext = $patients[$patientID]['system_prompt'];
+    }
+}
 
-**INTERACTION GUIDELINES:**
-1. **Tone:** Be impatient. Give short answers initially. If the student shows empathy, you can soften up.
-2. **Medical Accuracy:** You do not know medical jargon. You know how you feel.
-3. **Good Practice Evaluation:** The student is supposed to be screening you for Radioiodine Therapy (I-131).
-   - If they ask about pregnancy, say you aren't pregnant (Test is negative).
-   - If they ask about breastfeeding, say no.
-   - If they ask about **iodine contrast**, mention you had a CT Head with contrast 9 weeks ago (This is a potential contraindication).
-   
-**GOAL:**
-Force the student to dig for the "Critical Social History" (the pregnant sister) and the "Iodine Exposure" (the CT scan). If they miss these, do not tell them, let the simulation continue so they face the consequences in the debrief later.
-EOD;
+// 5. PREPARE REQUEST
+// -------------------------
+$url = "https://generativelanguage.googleapis.com/v1beta/models/$modelName:generateContent?key=" . $apiKey;
 
-// 4. Prepare the Request Body
-// Note: We move the persona into "system_instruction" for better adherence.
 $postData = [
-    "system_instruction" => [
-        "parts" => [
-            ["text" => $systemContext]
-        ]
-    ],
+    "system_instruction" => [ "parts" => [ ["text" => $systemContext] ] ],
     "contents" => [
-        [
-            "role" => "user",
-            "parts" => [
-                ["text" => $userMessage]
-            ]
-        ]
-    ],
-    "generationConfig" => [
-        "temperature" => 0.7, // 0.7 makes the acting more natural/varied
-        "maxOutputTokens" => 500
+        [ "role" => "user", "parts" => [ ["text" => $userMessage] ] ]
     ]
 ];
 
-// 5. Gemini API URL
-$url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" . $apiKey;
-
-// 6. Send Request
+// 6. SEND REQUEST (Using file_get_contents instead of cURL)
+// -------------------------
 $options = [
     'http' => [
         'method'  => 'POST',
         'header'  => "Content-Type: application/json\r\n",
         'content' => json_encode($postData),
-        'ignore_errors' => true
+        'ignore_errors' => true // Allows us to read error responses from Google
     ]
 ];
 
 $context  = stream_context_create($options);
-$response = @file_get_contents($url, false, $context);
+$response = file_get_contents($url, false, $context);
 
-// 7. Handle Response
+// 7. HANDLE RESPONSE
+// -------------------------
+// Check the HTTP response header to see if it was 200 OK
+$status_line = $http_response_header[0] ?? '';
+preg_match('/([0-9]{3})/', $status_line, $matches);
+$status_code = $matches[1] ?? 500;
+
 if ($response === FALSE) {
-    echo json_encode(['error' => 'API connection failed.']);
+    echo json_encode(['error' => 'Connection failed completely. Check internet/DNS.']);
+} elseif ($status_code != 200) {
+    // If Google returned an error (like 400 or 500), show it
+    echo json_encode([
+        'error' => 'API Error', 
+        'http_code' => $status_code, 
+        'details' => json_decode($response)
+    ]);
 } else {
+    // Success
     echo $response;
 }
 ?>

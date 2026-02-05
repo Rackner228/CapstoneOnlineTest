@@ -3,38 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASCEND</title>
+    <title>Dashboard | ASCEND</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header>
-        <h1>ASCEND</h1>
-        <p style="margin: 5px 0 0 0; color: var(--usu-gold); font-style: italic;">AI-Supported Cancer Education and Nuclear-Medicine Dashboard</p>
+    <header class="app-header">
+        <div class="brand">
+            <span class="brand-logo">ASCEND</span>
+            <div class="brand-divider"></div>
+            <span class="brand-context">Clinical Simulation Portal</span>
+        </div>
+        <nav class="nav-links">
+            <a href="index.php" class="nav-item active">Dashboard</a>
+            <a href="patients.php" class="nav-item">Cases</a>
+        </nav>
     </header>
 
-    <nav>
-        <a href="index.php">Home</a>
-        <a href="patients.php">Patients</a>
-        <a href="Admin.php">Admin Login</a>
-    </nav>
+    <main class="container">
+        <div class="page-header">
+            <h1 class="page-title">Welcome, Student</h1>
+            <p class="page-subtitle">Select a module to begin your training.</p>
+        </div>
 
-    <main>
-        <section>
-            <h2>ASCEND Information</h2>
-            <p> ASCEND is an AI-driven platform that facilitates medical training through simulation-based consultations.
-                ASCEND features customizable AI patient personas that reflects diverse medical histories, emotional states,
-                and knowledge levels, enabling medical students in nuclear medicine to engage in realistic, self-guided learning
-                experiences. The platform will provide immediate AI-generated feedback and allow educators to monitor student progess
-                and offer additional, targeted input, thereby enhancing student proficiency, improving nuclear medicine training, and 
-                supporting broader advancements in medical education and patient care. <p>
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+            <div class="card">
+                <h2 style="margin-top: 0; color: var(--primary);">Active Protocols</h2>
+                <p style="color: var(--text-muted); margin-bottom: 2rem;">
+                    Access high-fidelity simulated patient encounters for Nuclear Medicine training. 
+                    Review patient charts, identify contraindications, and practice communication skills.
+                </p>
+                <a href="patients.php" class="btn btn-primary">Browse Patient Cases</a>
+            </div>
 
-            
-            <br>
-            <a href="simulation.html" class="btn-primary">Start Simulation</a>
-        </section>
+            <div class="card" style="background-color: var(--primary); color: white;">
+                <div class="text-label" style="color: var(--accent);">System Status</div>
+                <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Online</div>
+                <p style="font-size: 0.875rem; opacity: 0.8;">
+                    Gemini 2.5 Flash Model
+                    <br>Latency: < 200ms
+                </p>
+            </div>
+        </div>
     </main>
-
 
 </body>
 </html>
