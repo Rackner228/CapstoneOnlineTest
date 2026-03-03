@@ -90,7 +90,7 @@ if (isset($data['choices'][0]['message']['content'])) {
     $aiText = $data['choices'][0]['message']['content'];
 
     // --- INSERT STEP 1 HERE: DEEPGRAM INTEGRATION ---
-    $deepgramApiKey = get_env('deep_gram'); 
+    $deepgramApiKey = getenv('deep_gram'); 
     
     // Using 'athena' for a mature, professional patient voice
     $ttsUrl = "https://api.deepgram.com/v1/speak?model=aura-athena-en&encoding=mp3";

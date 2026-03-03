@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit(0);
 
 // 2. CONFIGURATION
 // -------------------------
-$apiKey = gen_env('llama_API_KEY');
+$apiKey = getenv('llama_API_KEY');
 $modelName = 'llama-3.1-8b-instant';
 
 // 3. GET USER INPUT

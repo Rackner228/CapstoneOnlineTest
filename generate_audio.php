@@ -20,7 +20,7 @@ if (empty($text)) {
 }
 
 // 3. DEEPGRAM INTEGRATION
-$deepgramApiKey = gen_env('deep_gram'); 
+$deepgramApiKey = getenv('deep_gram'); 
 $ttsUrl = "https://api.deepgram.com/v1/speak?model=aura-athena-en&encoding=mp3";
 
 $ttsData = ["text" => $text];
