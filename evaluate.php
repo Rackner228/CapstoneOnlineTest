@@ -10,7 +10,7 @@ header('Access-Control-Allow-Headers: Content-Type');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit(0);
 
 // 2. CONFIG - Use your Groq Key here
-$apiKey = env_get('llama_API_KEY'); 
+$apiKey = getenv('llama_API_KEY'); 
 $modelName = 'llama-3.3-70b-versatile'; // Higher logic model for better grading
 
 // 3. GET INPUT
